@@ -2,147 +2,180 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures responsive design -->
     <title>Silverbullet Offensive v4.5</title>
-    <!-- Dependencies -->
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    
     <style>
-        :root { --bg:#020306; --panel:#1a0f1e; --accent:#ff007f; --text:#fce8f3; --term-green: #00ff7f; }
+        :root { --bg:#020306; --panel:#1a0f1e; --accent:#ff007f; --text:#fce8f3; } 
+        body { background-color: var(--bg); color: var(--text); font-family: 'Courier New', monospace; margin: 0; padding: 15px;}
 
-        body { background-color: var(--bg); color: var(--text); font-family: 'Courier New', monospace; margin: 0; padding: 20px;}
-
-        .container { max-width: 1400px; margin: auto; border: 1px solid #333; box-shadow: 0 0 50px rgba(255,0,127,0.2); padding: 25px; position:relative;}
+        .container { max-width: 90vw; margin: auto; border: 1px solid #444; box-shadow: 0 0 30px rgba(255,0,127,0.2); padding: 20px;}
         
-        /* HEADER & DEV LINK */
-        h1 { text-align:center; color:#ff007f; text-shadow: 0 0 15px rgba(255,0,127,0.6); font-size: 2.8rem; letter-spacing: 3px;}
-        .header p { text-align:center; color:#888; margin-top:-10px; }
+        h1 { text-align:center; color:#ff007f; letter-spacing: 2px;}
+        p.subtitle { text-align:center; color:#888; }
 
-        .dev-link-container { 
-            display: flex; justify-content: center; align-items: center; margin-top: -15px; z-index: 10;}
+        /* Developer Button Styles */
+        .dev-btn-container { display:flex; justify-content:center; margin-top:-10px;}
+        .tg-link { 
+            background-color: #2AABEE !important; color:white !important; text-decoration:none !important; 
+            font-size: 1rem; padding: 10px 20px !important; border-radius: 6px !important; box-shadow: 0 5px 15px rgba(42, 171, 238, 0.6); 
+            animation: pulse-green 2s infinite alternate;} /* Subtle pulse */
+            @keyframes pulse-green { from{box-shadow:0 0 0 rgba(42,171,238,0);} to{box-shadow:0 0 20px rgba(42,171,238,0.8);}}
+
+        .controls-row { display:flex; gap:10px; margin-top:15px;}
+        input[type="text"], select { background:#1a0f1e; border:1px solid #444; color:white; padding:10px; flex-grow:1;}
         
-        /* Stylized Telegram Button */
-        .telegram-btn {
-            background-color: #24a1de !important; /* Official TG Blue with neon glow */
-            color: white !important; 
-            padding: 12px 25px !important; 
-            font-size: 1.2rem !important; 
-            font-weight:bold !important; 
-            border-radius: 8px !important;
-            text-decoration:none !important;
-            box-shadow: 0 0 20px rgba(36, 161, 222, 0.6);
-            transition: all 0.3s ease-in-out;
-            display: inline-flex; align-items: center; gap:10px;
+        button.primary-btn { 
+            background-color: transparent !important; border: 1px solid var(--accent) !important; 
+            color: var(--accent) !important; font-weight:bold !important; cursor:pointer !important; }
+        button.primary-btn:hover:not(:disabled){ box-shadow: 0 0 20px rgba(255,0,127,0.6)!important; transform:scale(1.02); }
+
+        /* Terminal Output */
+        .terminal-output { 
+            background-color: var(--panel); height: 35vh; overflow-y:auto; padding: 10px; margin-top:15px; border-left:4px solid #ffaa00;}
+            div.term-line { margin-bottom:4px; line-height:1.3;}
+            
+            .t-info { color:#b0c4de;}
+            .t-success { color:#00ff7f;}
+            .t-danger{ color:#ffaa00;}
         }
 
-        .telegram-btn:hover { transform: scale(1.05); box-shadow: 0 0 35px rgba(36, 161, 222, 1);}
-        
-        /* Add a small TG icon (SVG) directly in the button for visual cue */
-        .tg-icon { width:24px; height:24px; fill:white;}
-
-        /* Dashboard & Terminal Styles (Same as previous version) */
-        .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
-        .stat-card { background:#110914; border: 1px solid #333; padding:15px; border-radius:6px; position:relative; overflow:hidden;}
-        
-        /* Controls */
-        input[type="text"], select, textarea { background:#0a080e; border:1px solid #444; color:white; padding:12px; flex-grow:1; outline:none;}
-
+        /* Table Styles */
+        table { width:100%; border-collapse: collapse; font-size: 0.9rem; margin-top:-2px;}
+        th, td { padding: 8px; text-align:left; border-bottom: 1px solid #333; } 
     </style>
 </head>
 <body>
 
 <div class="container">
     
-    <!-- TOP HEADER -->
-    <div style="text-align:center;">
-        <h1>Silverbullet Offensive v4.5</h1>
-        <p>> System Ready // Passive Recon & Active Vulnerability Scanning</p>
+    <h1>Silverbullet Offensive v4.5</h1>
+    <p class="subtitle">Passive Recon & Active Vulnerability Scanning</p>
 
-        <!-- CLICKABLE DEVELOPER LINK (NEW) -->
-        <div class="dev-link-container">
-            <a href="https://t.me/Silverbullets_bot" target="_blank" class="telegram-btn">
-                <!-- Simple SVG Telegram Icon -->
-                <svg class="tg-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.96 15.7l-.77-.69c-.97-.85-1.5-3.69-1.5-3.69V7c0-.69-.5-1.5-1.5-1H7v4h-.34L6.27 8C4.83 8 3 9.83 3 12c0 .69.34 1.5 1 1.8l-2 .79s.27-.02 1 .4c.69.48 1 .69 1 .69s-.42-.03-1 .04l-.4 2h5.85s-.27-.69.69-1c.56-.27 1-.51 1-.51zM7.06 8H9v5l3-2v-3h-5z"/></svg>
-                <span style="text-transform: uppercase; letter-spacing: 1px;">Developer Console: @Silverbullets_bot</span>
-            </a>
-        </div>
-
+    <!-- Developer Button -->
+    <div class="dev-btn-container">
+        <a href="https://t.me/Silverbullets_bot" target="_blank" class="tg-link">
+            DEV CONSOLE: @Silverbullets_bot
+        </a>
     </div>
 
-    <!-- MAIN CONTROLS -->
-    <div class="controls-row" style="display:flex; gap:15px; align-items:center; margin-bottom:20px;">
-        <input type="text" id="mainTargetInput" placeholder="[!] Enter Target Domain/IP (e.g., tesla.com or 192.168.x.x)">
-        <button class="btn-primary" onclick="runFullScan()" style="background-color:#ffaa00; color:black;">▶ EXECUTE FULL OFFENSIVE SCAN</button>
+    <!-- Scan Controls -->
+    <div class="controls-row">
+        <input type="text" id="mainTargetInput" placeholder="[!] Enter Target (e.g., tesla.com)">
+        <button id="btnScan" onclick="runFullScan()" class="primary-btn">▶ EXECUTE SCAN</button>
     </div>
 
-    <!-- TERMINAL OUTPUT -->
-    <div style="margin-top: 20px; font-size: 0.9rem; color: #555;">[ SYSTEM LOG & EXPLOIT STREAM ]</div>
-    <div class="terminal-window" id="termOutput">
-        <div class="term-line t-info"><small>[INIT]</small> Welcome to Silverbullet Offensive v4.5...</div>
-        <div class="term-line t-info"><small>[INIT]</small> Developer Node Connected.</div>
-        <div class="term-line t-info"><small>[WAITING]</small> Target input required for deep dive...</div>
+    <!-- Terminal Output -->
+    <h3>[ SYSTEM LOG & EXPLOIT STREAM ]</h3>
+    <div class="terminal-output" id="termOutput">
+        <div class="term-line t-info"><small>[INIT]</small> Welcome to Silverbullet v4.5...</div>
+        <div class="term-line t-info"><small>[WAITING]</small> Awaiting target input...</div>
     </div>
 
-    <!-- RESULTS TABLE -->
-    <h3 style="color:#b0c4de; margin-top:25px;">EXPLOITATION MATRIX (Live Results)</h3>
+    <!-- Results Table -->
+     <h3 style="color:#b0c4de; margin-top:20px;">EXPLOITATION MATRIX (Live)</h3>
     <table id="exploitTable">
-        <thead><tr><th>TARGET / IP</th><th>PORT</th><th>SERVICE/VERSION DETECTED</th><th>POTENTIAL EXPLOITS</th></tr></thead>
+        <thead><tr><th>TARGET / IP</th><th>POTENTIAL EXPLOITS</th></tr></thead> <!-- Simplified header for mobile -->
         <tbody id="resultsBody"></tbody>
     </table>
 
-    <!-- VISUAL MAP -->
-     <canvas id="visMap" width="100%" height="300" style="margin-top:20px; border: 1px solid #444; background:#08050a;"></canvas>
+    <!-- Visual Map Placeholder -->
+     <canvas id="visMap" width="95%" height="150" style="margin-top:20px; border: 1px solid #444; background:#08050a;"></canvas>
 
 <script>
-// --- CORE LOGIC (Simplified for snippet) ---
+// --- Core Logic (Simplified) ---
+const state = { assets:[], cvesFound:[] };
 
 function termLog(msg, type='info') {
     const div = document.createElement('div');
-    div.className = 'term-line'; // Assumes .t-info/.success classes defined in CSS
+    div.className = 'term-line'; 
     
-    if(type==='success' || msg.includes('[+]')) div.style.color = '#00ff7f';
-    else if(type==='warning' || msg.includes('[!]')) div.style.color='#ffaa00';
+    // Color coding helper
+    if(type==='success' || msg.includes('[+]')) { 
+        div.innerHTML += `<span class="t-success">[${msg.split(' ')[0]}]</span> ${msg.replace(/\[.*\]/,'').trim()}`; 
+    } else if (type==='warning' || msg.includes('[!]')) { 
+         div.innerHTML += `<span style="color:#ffaa00">[${msg}]</span>`; 
+    } else { 
+         div.innerHTML += `<small>[${new Date().toLocaleTimeString()}]</strong> <b>${msg}</b>`; 
+    }
     
-    // Add timestamp automatically or keep static as needed
-    div.innerHTML += `<small>[${new Date().toLocaleTimeString()}]</strong> ${msg}`; 
-    document.getElementById('termOutput').prepend(div); 
+    document.getElementById('termOutput').prepend(div); // Newest on top
+    
+    // Auto scroll to bottom of terminal
+    const tOut = document.getElementById('termOutput');
+    tOut.scrollTop = 0; 
 }
 
-// Mock scan function for demo flow
+// --- Main Scan Functionality ---
 async function runFullScan() {
     let target = document.getElementById('mainTargetInput').value.trim();
     if(!target) return termLog("Error: Target not specified.", 'warning');
 
-    state.assets=[]; 
+    state.assets = []; 
+    const resultsBody = document.getElementById('resultsBody');
     
-    const steps = [
-        `[INIT] Loading Nmap-style scanner modules...`,
-        `[INIT] Connecting to DNS resolvers for <b>${target}</b>...`,
-        
-        async () => { await resolveIpAndScan(target, target); }, // Subdomain find
-        
-        async () => { await scanMainIP("185.234.196.78", "main"); } // Main IP deep dive (simulated)
-    ];
-
-    let stepCount = 0;
+    // Simulate steps for demo purposes (Replace with real API calls like Shodan/Hackertarget here)
     
-    while(stepCount < steps.length) {
-        try { await steps[stepCount]; } catch(e){ termLog(`Step ${stepCount+1} failed: ${e}`, 'warning'); }
-        const msg = `Processing stream #${++stepCount}/${steps.length}`;
-        
-         setTimeout(() => termLog(msg, 'info'), 200); 
-        stepCount++;
-    }
-
-    updateStats();
-    termLog("[+] OFFENSIVE SCAN COMPLETE. Review table for high-value targets.", 'success');
+    step1(target); // Subdomain find
+    
 }
 
-// Helper to simulate API calls & UI updates (same as previous block)
-function resolveIpAndScan(sub, parentDomain) { ... } // Implementation from before
+function step1(target) {
+    // Mocking subdomain discovery via DNS resolver (API simulation)
+    setTimeout(() => {
+        termLog(`[+] Found subdomains: ${target}.dev, api.${target}`, 'success'); 
+        
+        // Adding a "main" IP mockup to demonstrate table filling
+        scanMainIP("185.234.XXX.XXX", target).then(r => { addRowToTable(r.ip, r.service, r.cve || 'Clean'); });
+
+    }, 1000);
+}
+
+// --- Simulation Helper for Demo Results ---
+async function scanMainIP(ip, originalDomain) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            // Randomly simulate finding a vulnerability or clean state
+            const isVuln = Math.random() > 0.7; 
+            let serviceData = "Apache httpd v2.4"; 
+            
+            if(isVuln) {
+                termLog(`[CRIT] Found Vulnerable Service on ${ip}`, 'danger');
+                serviceData += " (High Severity CVE-2021-XXXXX)"; // Mocked data
+                
+                addRowToTable(ip, `Port 80/443`, `"${serviceData}"`);
+                
+                 // Add to visual map logic here later...
+                 updateStats(); 
+            } else {
+                termLog(`[+] Clean Scan: ${originalDomain} -> IP: ${ip}`, 'success');
+                addRowToTable(ip, `Port 80/443`, `"${serviceData}"`);
+            }
+
+            resolve({ ip, service });
+        }, 800);
+    });
+}
+
+function updateAssets() { document.getElementById('s-assets').innerText = state.assets.length; }
+
+
+// Helper function to add rows to the table dynamically
+function addRowToTable(ip, port, serv) {
+    const tbody = document.getElementById('resultsBody');
     
-// Visual Map Placeholder
-const canvas = document.getElementById('visMap');
-const ctx = canvas.getContext('2d');
+    // If empty (first load), ensure visibility of headers
+    if(tbody.innerHTML === '') tbody.style.display='table'; 
+
+    const tr = document.createElement('tr');
+    tr.innerHTML=`<td><strong>${ip}</strong></td> <td style="font-size:0.85rem;">${port}<br><small>${serv}</small></td>`;
+    tbody.prepend(tr); // Newest on top
+    
+}
 
 </script>
+</div>
+
 </body>
 </html>
